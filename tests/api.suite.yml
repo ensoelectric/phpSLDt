@@ -1,0 +1,7 @@
+actor: ApiTester
+modules:   
+    enabled:
+        - \Helper\Api
+        - REST:
+            url: http://localhost/phpSLDt/api/v0.1.0/
+            depends: PhpBrowser
