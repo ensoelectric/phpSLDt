@@ -481,7 +481,7 @@ class Diagrams
 
         $table_2 .= "</table>";
 
-        $mpdf = new \Mpdf\Mpdf(["mode" => "utf-8", "format" => "A4-L"]);
+        $mpdf = new \Mpdf\Mpdf(["mode" => "utf-8", "format" => "A4-L", 'tempDir' => '/tmp']);
         $mpdf->shrink_tables_to_fit = 1;
         $mpdf->SetHTMLFooter(
             '<table style="width: 100%; font-family: sans-serif; font-size: 0.6em;">
