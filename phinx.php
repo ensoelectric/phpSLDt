@@ -8,20 +8,20 @@ return
     ],
     'environments' => [
         'default_migration_table' => 'phinxlog',
-        'default_environment' => 'development',
+        'default_environment' => 'production',
         'production' => [
             'adapter' => 'mysql',
             'host' => 'localhost',
-            'name' => 'production_db',
+            'name' => 'phpSLDt',
             'user' => 'root',
-            'pass' => '',
+            'pass' => 'toor',
             'port' => '3306',
             'charset' => 'utf8',
         ],
         'development' => [
             'adapter' => 'mysql',
             'host' => 'localhost',
-            'name' => 'single_line_table_diagrams_development_db',
+            'name' => 'phpSLDt_dev',
             'user' => 'root',
             'pass' => 'toor',
             'port' => '3306',
@@ -32,7 +32,7 @@ return
             'host' => 'localhost',
             'name' => 'phpSLDt_testing',
             'user' => 'root',
-            'pass' => '',
+            'pass' => 'toor',
             'port' => '3306',
             'charset' => 'utf8',
         ]

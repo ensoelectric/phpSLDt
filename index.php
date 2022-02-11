@@ -10,7 +10,7 @@ set_exception_handler('ru\ensoelectic\phpSLDt\exception_handler');
 set_error_handler('ru\ensoelectic\phpSLDt\exception_error_handler');
 
 define('DBHOST', '127.0.0.1');
-define('DBNAME', 'phpSLDt_development');
+define('DBNAME', 'phpSLDt_dev');
 define('DBCHARSET', 'utf8');
 
 $http_accept = ["application/json", "*/*", "application/pdf"];
@@ -35,7 +35,6 @@ $opt = [
 $headers = Headers::getInstance();
 
 try{
-
     $pdo = new PDO($dsn, $user, $pass, $opt);
 
     $pdo->beginTransaction();
@@ -45,50 +44,38 @@ try{
     if(!in_array(Helpers::getRequestMethod(), $resource->options($id ?? NULL))) throw new \Exception("Method Not Allowed", 405); 
     
     switch(Helpers::getRequestMethod()) {
-		case 'DELETE':
-			$resource->delete($id);
-            
-            $headers->add("HTTP/1.1 204 No content.");
-            $headers->add("Content-Type: application/json");
-			
-            break;
-		case 'POST':
-			$insert_id = $resource->create(file_get_contents("php://input"));
-            
-            $headers->add("HTTP/1.1 201 Created.");
-            $headers->add("Content-Type: application/json");
-            
-            if(empty($insert_id)) break;
-            
-            $headers->add("Location: ".Helpers::getProtocol()."".$_SERVER['HTTP_HOST']."".strtok($_SERVER['REQUEST_URI'], "?")."/".$insert_id);
-               
-            $response = $resource->find($insert_id);
-            
-			break;
-		case 'GET':
-            $response = !empty($id) ? $resource->find($id, $_SERVER['HTTP_ACCEPT'] ?? NULL) : $resource->findAll(intval($_GET['page'] ?? 1), intval($_GET['per_page'] ?? 150), $_GET['search'] ?? NULL);
-            
-            $headers->add("HTTP/1.1 200 OK");
-            $headers->add("Content-Type: application/json");
-         
-			break;
-		case 'PUT':
-            
-			$resource->update($id, file_get_contents("php://input"));
-            
-            $headers->add("HTTP/1.1 204 No content.");
-            $headers->add("Content-Type: application/json");
-            
-			break;	
-        case 'OPTIONS':
-       
-            $headers->add("HTTP/1.1 200 OK");
-            $headers->add("Content-Type: application/json");
-            $headers->add("Access-Control-Allow-Methods: ".implode(",", $resource->options($id ?? NULL)));
-            
-			break;							
-		default:
-			throw new \Exception("", 500);
+      case 'DELETE':
+        $resource->delete($id); 
+        $headers->add("HTTP/1.1 204 No content.");
+        $headers->add("Content-Type: application/json");
+        break;
+      case 'POST':
+        $insert_id = $resource->create(file_get_contents("php://input"));
+        $headers->add("HTTP/1.1 201 Created.");
+        $headers->add("Content-Type: application/json");
+
+        if(empty($insert_id)) break;
+        
+        $headers->add("Location: ".Helpers::getProtocol()."".$_SERVER['HTTP_HOST']."".strtok($_SERVER['REQUEST_URI'], "?")."/".$insert_id);
+        $response = $resource->find($insert_id);
+        break;
+      case 'GET':
+        $response = !empty($id) ? $resource->find($id, $_SERVER['HTTP_ACCEPT'] ?? NULL) : $resource->findAll(intval($_GET['page'] ?? 1), intval($_GET['per_page'] ?? 150), $_GET['search'] ?? NULL);
+        $headers->add("HTTP/1.1 200 OK");
+        $headers->add("Content-Type: application/json"); 
+        break;
+      case 'PUT':
+        $resource->update($id, file_get_contents("php://input"));
+        $headers->add("HTTP/1.1 204 No content.");
+        $headers->add("Content-Type: application/json");
+        break;	
+      case 'OPTIONS':
+        $headers->add("HTTP/1.1 200 OK");
+        $headers->add("Content-Type: application/json");
+        $headers->add("Access-Control-Allow-Methods: ".implode(",", $resource->options($id ?? NULL)));
+        break;							
+      default:
+        throw new \Exception("", 500);
 		}
 
     $pdo->commit();
@@ -105,21 +92,21 @@ try{
         preg_match('/SQLSTATE\[(\w+)\] \[(\w+)\] (.*)/', $e->getMessage(), $matches);
         
     switch($errorInfo[1] ?? $matches[2]){ 
-            case '1045': //Access denied for user
-                throw new \Exception($e->getMessage(), 401);
+      case '1045': //Access denied for user
+        throw new \Exception($e->getMessage(), 401);
 			case '1048': //Cannot be null
 			case '1062': //Duplicate entry for key 'SERIAL NUMBER UNIQUE
-            case '1264': //Numeric value out of range
+      case '1264': //Numeric value out of range
 			case '1366': //Incorrect double value
 			case '1406': //Data too long
 			case '1452': //Cannot add or update a child row
-                $pdo->rollback();
+        $pdo->rollback();
 				throw new \Exception($e->getMessage(), 422);
 			case '1451': //Cannot delete or update a parent row
-                $pdo->rollback();
+        $pdo->rollback();
 				throw new \Exception($e->getMessage(), 409);
 			case '1142': //command denied to user
-                $pdo->rollback();
+        $pdo->rollback();
 				throw new \Exception($e->getMessage(), 403);
 			default:
 				throw $e;

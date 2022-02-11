@@ -1,4 +1,13 @@
 {
+    "name": "ensoelectric/phpsldt",
+    "description": "phpSLDt",
+    "license": "MIT",
+    "authors": [
+        {
+            "name": "Artirm Pletnev",
+            "email": "artirm.pletnev@gmail.com"
+        }
+    ],
     "require-dev": {
         "robmorgan/phinx": "^0.12.9",
         "fzaninotto/faker": "^1.9",
@@ -16,6 +25,9 @@
         }
     },
     "require": {
-        "mpdf/mpdf": "^8.0"
+        "mpdf/mpdf": "^8.0",
+        "php": ">=7.2",
+        "ext-pdo": "*",
+        "ext-pdo_mysql": "*"
     }
 }
