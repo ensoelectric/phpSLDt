@@ -4,6 +4,7 @@ namespace ru\ensoelectic\phpSLDt;
 class Diagrams
 {
     private $db;
+    private $content_type="application/json";
 
     public function __construct($db)
     {
@@ -34,12 +35,8 @@ class Diagrams
         if (!isset($diagram)) throw new \Exception("Not found", "404");
 
         if ($http_accept == "application/pdf"){
-          try{
-            $this->generatePDF($diagram);
-            die();
-          } catch(Exception $e){
-            throw $e;
-          }
+            $this->content_type = "application/pdf";
+            return $this->generatePDF($diagram);
         }
 
         return json_encode($diagram);
@@ -134,6 +131,11 @@ class Diagrams
         if ($stmt->rowCount() == 0) throw new \Exception("Not found", 404);
 
         return ["GET", "PUT", "DELETE", "OPTIONS"];
+    }
+    
+    public function getContentType(): string
+    {
+        return $this->content_type;
     }
 
     private function getAll(int $page, int $per_page): array
@@ -503,6 +505,6 @@ class Diagrams
         $mpdf->WriteHTML($applications);
 
         // Output a PDF file directly to the browser
-        return $mpdf->Output('file.pdf', \Mpdf\Output\Destination::DOWNLOAD);
+        return $mpdf->Output('file.pdf', \Mpdf\Output\Destination::STRING_RETURN);
     }
 }

@@ -14,7 +14,7 @@ info:
   license:
     name: The MIT License
     url: 'https://opensource.org/licenses/MIT'
-  version: 0.1.2
+  version: 0.1.3
 servers:
   - url: 'http://192.168.0.246/phpSLDt/api/v0.1'
 paths:

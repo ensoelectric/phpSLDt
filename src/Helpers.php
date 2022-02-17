@@ -81,5 +81,23 @@ class Helpers {
         
 		return $data;
 	}
+    
+    //Response to preflight request (CORS)
+    public static function preflightResponse(): void
+    {
+        $headers = Headers::getInstance();
+        $headers->clear();
+        
+        $headers->add("Access-Control-Allow-Origin: *");
+        $headers->add('Access-Control-Allow-Methods: *');
+        $headers->add('Access-Control-Allow-Headers: *');
+        
+        $headers->send();
+    }
+    
+    public static function checkHttpAcceptHeader(array $http_accept): void
+    {
+        if (!in_array($_SERVER['HTTP_ACCEPT'] ?? NULL, $http_accept)) throw new \Exception("Not Acceptable", 406);
+    }
 }
 

@@ -5,6 +5,7 @@ class Applications
 {
     private $db;
     private $records;
+    private $content_type="application/json";
 
     public function __construct($db)
     {
@@ -139,6 +140,11 @@ class Applications
 
             $stmt->execute($prepare_array);
         }
+    }
+    
+    public function getContentType(): string
+    {
+        return $this->content_type;
     }
 
     private function moveUp(int $switchgear, int $position): void
