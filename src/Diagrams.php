@@ -14,6 +14,8 @@ class Diagrams
     public function findAll(int $page = 1, int $per_page = 150, string $search = null): string
     {
         $diagrams = empty($search) ? $this->getAll($page, $per_page) : $this->search($page, $per_page, $search);
+        
+        Headers::getInstance()->add('Access-Control-Expose-Headers: Link, X-Total-Count');
 
         return json_encode($diagrams);
     }
@@ -167,7 +169,7 @@ class Diagrams
     private function search(int $page, int $per_page, string $search): array
     {
         $stmt = $this->db->prepare(
-            "SELECT COUNT(*) FROM `switchgears` WHERE `deleted_at` IS NULL AND `draft` = 0 AND CONCAT(`label`, `location`) LIKE ?"
+            "SELECT COUNT(*) FROM `switchgears` WHERE `deleted_at` IS NULL AND `draft` = 0 AND CONCAT_WS(' ', `label`, `location`) LIKE ?"
         );
         $stmt->execute(["%$search%"]);
         $total_count = $stmt->fetchColumn();
@@ -177,7 +179,7 @@ class Diagrams
         if ($total_count <= 0) return [];
 
         $stmt = $this->db->prepare(
-            "SELECT * FROM `switchgears` WHERE `deleted_at` IS NULL AND `draft` = 0 AND CONCAT(`label`, `location`) LIKE ? ORDER BY `created_at` DESC LIMIT ? OFFSET ?;"
+            "SELECT * FROM `switchgears` WHERE `deleted_at` IS NULL AND `draft` = 0 AND CONCAT_WS(' ', `label`, `location`) LIKE ? ORDER BY `created_at` DESC LIMIT ? OFFSET ?;"
         );
 
         $stmt->execute(["%$search%", $per_page, $per_page * ($page - 1)]);

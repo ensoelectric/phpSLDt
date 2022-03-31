@@ -65,8 +65,10 @@ try{
         $response = $resource->find($insert_id);
         break;
       case 'GET':
-        $response = !empty($id) ? $resource->find($id, $_SERVER['HTTP_ACCEPT'] ?? NULL) : $resource->findAll(intval($_GET['page'] ?? 1), intval($_GET['per_page'] ?? 150), $_GET['search'] ?? NULL);
+        $response = !empty($id) ? $resource->find($id, $_SERVER['HTTP_ACCEPT'] ?? NULL) : $resource->findAll(intval($_GET['page'] ?? 1), intval($_GET['per_page'] ?? 50), $_GET['search'] ?? NULL);
+        
         $headers->add("HTTP/1.1 200 OK");
+        
         break;
       case 'PUT':
         $resource->update($id, file_get_contents("php://input"));

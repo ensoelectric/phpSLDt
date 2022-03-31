@@ -129,6 +129,10 @@ paths:
               schema:
                 allOf:
                   - $ref: '#/components/schemas/diagram'
+            application/pdf:
+                schema:
+                    type: string
+                    format: binary
         '401':
           $ref: '#/components/responses/401'
         '404':
